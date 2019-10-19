@@ -1,6 +1,6 @@
 /* 
 * Primary file for the API
-*
+* Author: Mike Bell
 */
 
 // Dependencies
