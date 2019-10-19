@@ -1,0 +1,19 @@
+{
+  "name": "pirple-node",
+  "version": "0.0.1",
+  "description": "Homework project for Pirple NodeJS Masterclass",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/academic-repos/pirple-node.git"
+  },
+  "author": "Mike Bell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/academic-repos/pirple-node/issues"
+  },
+  "homepage": "https://github.com/academic-repos/pirple-node#readme"
+}
