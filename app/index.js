@@ -1,6 +1,8 @@
 /* 
+* Node JS Masterclass by Pirple (homework repo)
 * Primary file for the API
 * Author: Mike Bell
+*
 */
 
 // Dependencies
