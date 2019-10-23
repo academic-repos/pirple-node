@@ -8,6 +8,7 @@
 // Dependencies
 const http = require('http');
 const url = require('url');
+const StringDecoder = require('string_decoder').StringDecoder;
 
 // The server should respond to all requests with a string
 const server = http.createServer((req, res) => {
@@ -29,12 +30,26 @@ const server = http.createServer((req, res) => {
     // Get the Headers as an object
     const headers = req.headers;
 
-    // Send the response
-    res.end('Hello World \n');
+    // Get the payload, if any
+    const decoder = new StringDecoder('utf-8');
+    let buffer = '';
+    let eventCount = 0;
+    req.on('data', (data) => {
+        eventCount++
+        buffer += decoder.write(data);
+        console.log('This is the data event: \n', data);
+    });
 
-    // Log the request path
-    console.log(`Request received on path: ${trimmedPath} with method: ${method} and path: ${path}`);
-    console.log('Request received with these headers', headers);
+    req.on('end', () => {
+        buffer += decoder.end();
+        // Send the response
+        res.end('Hello World \n');
+    
+        // Log the request path        
+        console.log('Request received with this payload: \n', buffer);
+        console.log(`Request Data event was fired ${eventCount} times`);
+    });
+
 
     });
 
@@ -42,3 +57,5 @@ const server = http.createServer((req, res) => {
 server.listen(3000, function() {
     console.log('The server is listening on port 3000 now');
 });
+
+.. 
