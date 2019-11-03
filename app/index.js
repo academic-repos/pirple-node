@@ -12,6 +12,19 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const fs = require('fs');
+const _data = require('./lib/data').default;
+
+// TESTING
+// TODO delete this
+_data.create('test', 'testA', {msg: 'Hello World A'}, (err) => {
+    if (!err) console.log('Test A worked!');
+    else console.log('Test A failed');
+    console.log('This was the error \n ', err);
+});
+// create('test', 'testB', {msg: 'Hello World B'}, (err) => {
+//     if (!err) console.log('Test B worked!');
+//     else console.log('Test B failed');
+// })
 
 // Instaniating the HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -20,8 +33,8 @@ const httpServer = http.createServer((req, res) => {
 
 // Instantiate the HTTPS server
 const httpsServerOptions = {
-    'key': fs.readFileSync('./https/key.pem'),
-    'cert': fs.readFileSync('./https/cert.pem')
+    // 'key': fs.readFileSync('./https/key.pem'),
+    // 'cert': fs.readFileSync('./https/cert.pem')
 };
 const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
     unifiedServer(req, res);
