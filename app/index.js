@@ -12,38 +12,33 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const fs = require('fs');
+const path = require('path');
 const _data = require('./lib/data').default;
 
 // TESTING
-// TODO delete this
-_data.create('test', 'testA', {msg: 'Hello World A'}, (err) => {
-    if (!err) console.log('Test A worked!');
-    else console.log('Test A failed');
-    console.log('This was the error \n ', err);
+// @TODO delete this
+_data.delete('test', 'testA', (err) => {
+    console.log('this was the error, ', err);
 });
-// create('test', 'testB', {msg: 'Hello World B'}, (err) => {
-//     if (!err) console.log('Test B worked!');
-//     else console.log('Test B failed');
-// })
+
 
 // Instaniating the HTTP server
 const httpServer = http.createServer((req, res) => {
     unifiedServer(req, res);
 });
 
-// Instantiate the HTTPS server
-const httpsServerOptions = {
-    // 'key': fs.readFileSync('./https/key.pem'),
-    // 'cert': fs.readFileSync('./https/cert.pem')
-};
-const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
-    unifiedServer(req, res);
-});
-
-
 // Start the HTTP server
 httpServer.listen(config.httpPort, function () {
     console.log(`The server is listening on port ${config.httpPort}`);
+});
+
+// Instantiate the HTTPS server
+const httpsServerOptions = {
+    'key': fs.readFileSync(__dirname+'/https/key.pem', {flag: 'r'}),
+    'cert': fs.readFileSync(__dirname+'/https/cert.pem', {flag: 'r'})
+};
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+    unifiedServer(req, res);
 });
 
 // Start the HTTPS
@@ -85,7 +80,7 @@ const unifiedServer = (req, res) => {
 
         // Choose the handler this request should go to,
         // If one is not found, use the not found handler
-        const chosenHandler = typeof (router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+        const chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
 
         // Construct data object to send to handler
 
@@ -103,7 +98,7 @@ const unifiedServer = (req, res) => {
             statusCode = typeof (statusCode) == 'number' ? statusCode : 200;
 
             // Use the payload cb by the handler or default to empty object
-            payload = typeof (payload) == 'object' ? payload : {};
+            payload = typeof (payload) == 'object' ? payload : {msg: 'No payload received'};
 
             // convert the payload to a string
             const payloadString = JSON.stringify(payload);
