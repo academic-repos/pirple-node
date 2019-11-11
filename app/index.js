@@ -13,14 +13,6 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const fs = require('fs');
 const path = require('path');
-const _data = require('./lib/data').default;
-
-// TESTING
-// @TODO delete this
-_data.delete('test', 'testA', (err) => {
-    console.log('this was the error, ', err);
-});
-
 
 // Instaniating the HTTP server
 const httpServer = http.createServer((req, res) => {
