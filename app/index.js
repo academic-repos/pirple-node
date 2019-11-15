@@ -10,9 +10,10 @@ const http = require('http');
 const https = require('https');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
-const config = require('./config');
+const config = require('./lib/config');
 const fs = require('fs');
-const path = require('path');
+const handlers = require('./lib/handlers');
+const helpers = require('./lib/helpers');
 
 // Instaniating the HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -60,11 +61,8 @@ const unifiedServer = (req, res) => {
     // Get the payload, if any
     const decoder = new StringDecoder('utf-8');
     let buffer = '';
-    let eventCount = 0;
     req.on('data', (data) => {
-        eventCount++
         buffer += decoder.write(data);
-        console.log('This is the data event: \n', data);
     });
 
     req.on('end', () => {
@@ -81,16 +79,16 @@ const unifiedServer = (req, res) => {
             queryStringObject,
             method,
             headers,
-            payload: buffer
-        }
+            payload: helpers.parseJsonToObject(buffer)
+        };
 
         // Route the request to the handler specified in the router
         chosenHandler(data, (statusCode, payload) => {
             // Use the status code cb by the handler or default to 200
-            statusCode = typeof (statusCode) == 'number' ? statusCode : 200;
+            statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 
             // Use the payload cb by the handler or default to empty object
-            payload = typeof (payload) == 'object' ? payload : {msg: 'No payload received'};
+            payload = typeof(payload) == 'object' ? payload : {};
 
             // convert the payload to a string
             const payloadString = JSON.stringify(payload);
@@ -107,21 +105,8 @@ const unifiedServer = (req, res) => {
 
 };
 
-// Define the handlers
-const handlers = {};
-
-// Ping Handler
-handlers.ping = (data, callback) => {
-    // Callback a http status code, and a payload object
-    callback(200);
-};
-
-// Not found handler
-handlers.notFound = (data, callback) => {
-    callback(404);
-};
-
 // Define a request router 
 const router = {
-    'ping': handlers.ping
+    'ping': handlers.ping,
+    'users': handlers.users
 };
